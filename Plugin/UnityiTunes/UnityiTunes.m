@@ -16,6 +16,7 @@ typedef void (*callbackFunc)(const char *);
   iTunesApplication *iTunes_;
   callbackFunc statusCallback_;
   char artistBuffer[1024];
+  char albumBuffer[1024];
   char titleBuffer[1024];
 }
 @property callbackFunc statusCallback;
@@ -67,6 +68,13 @@ typedef void (*callbackFunc)(const char *);
   return artistBuffer;
 }
 
+- (const char *)album
+{
+  strncpy(albumBuffer, [iTunes_.currentTrack.album UTF8String], 1023);
+  albumBuffer[1023] = '\0';
+  return albumBuffer;
+}
+
 - (const char *)title
 {
   strncpy(titleBuffer, [iTunes_.currentTrack.name UTF8String], 1023);
@@ -99,6 +107,11 @@ double _GetPlayPosition()
 const char *_GetArtist()
 {
   return helper.artist;
+}
+
+const char *_GetAlbum()
+{
+  return helper.album;
 }
 
 const char *_GetTitle()
