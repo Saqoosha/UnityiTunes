@@ -34,6 +34,8 @@ public class iTunesHelper
     private static extern IntPtr _GetArtist();
     [DllImport("UnityiTunes")]
     private static extern IntPtr _GetTitle();
+    [DllImport("UnityiTunes")]
+    private static extern double _GetDuration();
 
     public static event Action<string> OnStatusChanged;
 
@@ -70,4 +72,13 @@ public class iTunesHelper
             return Marshal.PtrToStringAuto(_GetTitle());
         }
     }
+
+    public static float Duration
+    {
+        get
+        {
+            return (float)_GetDuration();
+        }
+    }
+    
 }

@@ -9,6 +9,7 @@ public class Controller : MonoBehaviour
     public Text _status;
     public Text _artist;
     public Text _title;
+    public Text _duration;
     public Text _playerPosition;
 
 
@@ -21,6 +22,7 @@ public class Controller : MonoBehaviour
         _status.text = "";
         _artist.text = "";
         _title.text = "";
+        _duration.text = "";
         _playerPosition.text = "";
 
         StartCoroutine(UpdateInfo());
@@ -31,10 +33,11 @@ public class Controller : MonoBehaviour
     {
         while (true)
         {
-            Debug.Log(Time.time);
-            yield return new WaitForSeconds(0.5f);
+            // Debug.Log(Time.time);
+            yield return new WaitForEndOfFrame();
             _artist.text = iTunesHelper.CurrentArtist;
             _title.text = iTunesHelper.CurrentTitle;
+            _duration.text = iTunesHelper.Duration.ToString();
             _playerPosition.text = iTunesHelper.PlayerPosition.ToString();
         }
     }

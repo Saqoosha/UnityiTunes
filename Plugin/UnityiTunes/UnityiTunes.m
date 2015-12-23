@@ -82,6 +82,11 @@ typedef void (*callbackFunc)(const char *);
   return titleBuffer;
 }
 
+- (double)duration
+{
+  return iTunes_.currentTrack.duration;
+}
+
 @end
 
 
@@ -119,3 +124,7 @@ const char *_GetTitle()
   return helper.title;
 }
 
+double _GetDuration()
+{
+  return helper.duration;
+}
