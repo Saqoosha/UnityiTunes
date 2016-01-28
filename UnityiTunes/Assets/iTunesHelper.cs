@@ -1,6 +1,6 @@
-using UnityEngine;
 using System;
 using System.Runtime.InteropServices;
+
 
 public class MonoPInvokeCallbackAttribute : Attribute
 {
@@ -10,6 +10,7 @@ public class MonoPInvokeCallbackAttribute : Attribute
         type = t;
     }
 }
+
 
 public class iTunesHelper
 {
@@ -24,10 +25,38 @@ public class iTunesHelper
         }
     }
 
+
+    // enum iTunesEPlS {
+    //     iTunesEPlSStopped = 'kPSS',
+    //     iTunesEPlSPlaying = 'kPSP',
+    //     iTunesEPlSPaused = 'kPSp',
+    //     iTunesEPlSFastForwarding = 'kPSF',
+    //     iTunesEPlSRewinding = 'kPSR'
+    // };
+    // from above definition, convert it to int by JavaScript like this:
+    // +function(key){return key.charCodeAt(0)<<24 | key.charCodeAt(1)<<16 | key.charCodeAt(2)<<8 | key.charCodeAt(3);}("kPSR")
+    public enum iTunesStatus
+    {
+        Stopped = 1800426323,
+        Playing = 1800426320,
+        Paused = 1800426352,
+        FastForwarding = 1800426310,
+        Rewinding = 1800426322,
+    }
+
+
     [DllImport("UnityiTunes")]
     private static extern void _Init(callback callback);
     [DllImport("UnityiTunes")]
-    private static extern void _Cleanup();
+    public static extern void Cleanup();
+    [DllImport("UnityiTunes")]
+    public static extern void PlayPause();
+    [DllImport("UnityiTunes")]
+    public static extern void Stop();
+    [DllImport("UnityiTunes")]
+    public static extern void Rewind();
+    [DllImport("UnityiTunes")]
+    public static extern int _GetStatus();
     [DllImport("UnityiTunes")]
     public static extern double _GetPlayPosition();
     [DllImport("UnityiTunes")]
@@ -44,41 +73,10 @@ public class iTunesHelper
         _Init(_internalStatusChange);
     }
 
-    public static void Cleanup()
-    {
-        _Cleanup();
-    }
-
-    public static float PlayerPosition
-    {
-        get
-        {
-            return (float)_GetPlayPosition();
-        }
-    }
-
-    public static string CurrentArtist
-    {
-        get
-        {
-            return Marshal.PtrToStringAuto(_GetArtist());
-        }
-    }
-
-    public static string CurrentTitle
-    {
-        get
-        {
-            return Marshal.PtrToStringAuto(_GetTitle());
-        }
-    }
-
-    public static float Duration
-    {
-        get
-        {
-            return (float)_GetDuration();
-        }
-    }
+    public static iTunesStatus Status { get { return (iTunesStatus)_GetStatus(); } }
+    public static float PlayerPosition { get { return (float)_GetPlayPosition(); } }
+    public static string CurrentArtist { get { return Marshal.PtrToStringAuto(_GetArtist()); } }
+    public static string CurrentTitle { get { return Marshal.PtrToStringAuto(_GetTitle()); } }
+    public static float Duration { get { return (float)_GetDuration(); } }
     
 }

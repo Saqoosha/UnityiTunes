@@ -19,6 +19,8 @@ public class Controller : MonoBehaviour
         iTunesHelper.OnStatusChanged -= OnStatusChanged;
         iTunesHelper.OnStatusChanged += OnStatusChanged;
 
+        Debug.Log("Status: " + iTunesHelper.Status);
+
         _status.text = "";
         _artist.text = "";
         _title.text = "";
@@ -40,6 +42,24 @@ public class Controller : MonoBehaviour
             _duration.text = iTunesHelper.Duration.ToString();
             _playerPosition.text = iTunesHelper.PlayerPosition.ToString();
         }
+    }
+
+
+    public void PlayPause()
+    {
+        iTunesHelper.PlayPause();
+    }
+
+
+    public void Stop()
+    {
+        iTunesHelper.Stop();
+    }
+
+
+    public void Rewind()
+    {
+        iTunesHelper.Rewind();
     }
 
 
