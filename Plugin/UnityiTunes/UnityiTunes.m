@@ -144,6 +144,11 @@ double _GetPlayPosition()
   return helper.iTunes.playerPosition;
 }
 
+void _SetPlayPosition(double position)
+{
+  helper.iTunes.playerPosition = position;
+}
+
 
 const char *_GetArtist()
 {
