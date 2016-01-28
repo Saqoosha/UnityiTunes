@@ -62,6 +62,8 @@ public class iTunesHelper
     [DllImport("UnityiTunes")]
     private static extern IntPtr _GetArtist();
     [DllImport("UnityiTunes")]
+    private static extern IntPtr _GetAlbum();
+    [DllImport("UnityiTunes")]
     private static extern IntPtr _GetTitle();
     [DllImport("UnityiTunes")]
     private static extern double _GetDuration();
@@ -76,6 +78,7 @@ public class iTunesHelper
     public static iTunesStatus Status { get { return (iTunesStatus)_GetStatus(); } }
     public static float PlayerPosition { get { return (float)_GetPlayPosition(); } }
     public static string CurrentArtist { get { return Marshal.PtrToStringAuto(_GetArtist()); } }
+    public static string CurrentAlbum { get { return Marshal.PtrToStringAuto(_GetAlbum()); } }
     public static string CurrentTitle { get { return Marshal.PtrToStringAuto(_GetTitle()); } }
     public static float Duration { get { return (float)_GetDuration(); } }
     
