@@ -37,10 +37,6 @@ public class Controller : MonoBehaviour
         {
             // Debug.Log(Time.time);
             yield return new WaitForEndOfFrame();
-            _artist.text = iTunesHelper.CurrentArtist;
-            _album.text = iTunesHelper.CurrentAlbum;
-            _title.text = iTunesHelper.CurrentTitle;
-            _duration.text = iTunesHelper.Duration.ToString();
             _playerPosition.text = iTunesHelper.PlayerPosition.ToString();
         }
     }
@@ -74,8 +70,12 @@ public class Controller : MonoBehaviour
     {
         Debug.Log("Status: " + status);
         _status.text = status;
+        _artist.text = iTunesHelper.CurrentArtist;
+        _album.text = iTunesHelper.CurrentAlbum;
+        _title.text = iTunesHelper.CurrentTitle;
+        _duration.text = iTunesHelper.Duration.ToString();
     }
-    
+
 
     void OnApplicationQuit()
     {

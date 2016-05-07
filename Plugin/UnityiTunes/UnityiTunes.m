@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "iTunes.h"
 
+#define BUFLEN (1024)
+
 
 typedef void (*callbackFunc)(const char *);
 
@@ -17,12 +19,17 @@ typedef void (*callbackFunc)(const char *);
 {
   iTunesApplication *iTunes_;
   callbackFunc statusCallback_;
-  char artistBuffer[1024];
-  char albumBuffer[1024];
-  char titleBuffer[1024];
+  char *artist_;
+  char *album_;
+  char *title_;
+  float duration_;
 }
 
 @property(readonly) iTunesApplication *iTunes;
+@property(readonly) char *artist;
+@property(readonly) char *album;
+@property(readonly) char *title;
+@property(readonly) float duration;
 @property callbackFunc statusCallback;
 
 @end
@@ -32,6 +39,10 @@ typedef void (*callbackFunc)(const char *);
 @implementation iTunesHelper
 
 @synthesize iTunes = iTunes_;
+@synthesize artist = artist_;
+@synthesize album = album_;
+@synthesize title = title_;
+@synthesize duration = duration_;
 @synthesize statusCallback = statusCallback_;
 
 
@@ -45,6 +56,9 @@ typedef void (*callbackFunc)(const char *);
                                                         selector:@selector(updateTrackInfoFromITunes:)
                                                             name:@"com.apple.iTunes.playerInfo"
                                                           object:nil];
+    artist_ = calloc(BUFLEN, 1);
+    album_ = calloc(BUFLEN, 1);
+    title_ = calloc(BUFLEN, 1);
   }
   return self;
 }
@@ -52,14 +66,39 @@ typedef void (*callbackFunc)(const char *);
 
 - (void)dealloc
 {
+  free(artist_);
+  free(album_);
+  free(title_);
+  
   [[NSDistributedNotificationCenter defaultCenter] removeObserver:self];
   [iTunes_ release];
+  
   [super dealloc];
 }
 
 
 - (void)updateTrackInfoFromITunes:(NSNotification *)notification
 {
+  NSLog(@"%@", notification.userInfo);
+  
+
+  memset(artist_, 0, BUFLEN);
+  if (notification.userInfo[@"Artist"]) {
+    strncpy(artist_, [notification.userInfo[@"Artist"] UTF8String], BUFLEN - 1);
+  }
+
+  memset(album_, 0, BUFLEN);
+  if (notification.userInfo[@"Album"]) {
+    strncpy(album_, [notification.userInfo[@"Album"] UTF8String], BUFLEN - 1);
+  }
+
+  memset(title_, 0, BUFLEN);
+  if (notification.userInfo[@"Name"]) {
+    strncpy(title_, [notification.userInfo[@"Name"] UTF8String], BUFLEN - 1);
+  }
+  
+  duration_ = [notification.userInfo[@"Total Time"] floatValue] / 1000.0; // ms to secs
+  
   NSString *state = notification.userInfo[@"Player State"];
   if (statusCallback_ != NULL)
   {
@@ -67,29 +106,6 @@ typedef void (*callbackFunc)(const char *);
   }
 }
 
-
-- (const char *)artist
-{
-  strncpy(artistBuffer, [iTunes_.currentTrack.artist UTF8String], 1023);
-  artistBuffer[1023] = '\0';
-  return artistBuffer;
-}
-
-
-- (const char *)album
-{
-  strncpy(albumBuffer, [iTunes_.currentTrack.album UTF8String], 1023);
-  albumBuffer[1023] = '\0';
-  return albumBuffer;
-}
-
-
-- (const char *)title
-{
-  strncpy(titleBuffer, [iTunes_.currentTrack.name UTF8String], 1023);
-  titleBuffer[1023] = '\0';
-  return titleBuffer;
-}
 
 @end
 
@@ -170,6 +186,6 @@ const char *_GetTitle()
 
 double _GetDuration()
 {
-  return helper.iTunes.currentTrack.duration;
+  return helper.duration;
 }
 
